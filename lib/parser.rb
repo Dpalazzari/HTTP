@@ -7,53 +7,52 @@ class Parser
     @request_lines = request_lines
   end
 
-  def verb
-    verb = request_lines.detect do |line|
-      line.include?("HTTP")
+  def detect_header(header)
+    request_lines.detect do |line|
+      line.include?(header)
     end
-    verb.split[0]
+  end
+
+  def verb
+    detect_header("HTTP").split[0]
   end
 
   def path
-    path = request_lines.detect do |line|
-      line.include?("HTTP")
+    if detect_header("HTTP").include?("?")
+      detect_header("HTTP").split[1].split("?")[0]
+    else
+      detect_header("HTTP").split[1]
     end
-    path.split[1]
+  end
+
+  def parameter_value
+    if detect_header("HTTP").include?("?")
+      param = detect_header("HTTP").split
+      param_1 = param[1].split("?")
+      param_2 = param_1[1].split("=")
+      word = param_2[1]
+    end
   end
 
   def protocol
-    protocol = request_lines.detect do |line|
-      line.include?("HTTP")
-    end
-    protocol.split[2]
+    detect_header("HTTP").split[2]
   end
 
   def host
-    host = request_lines.detect do |line|
-      line.include?("Host")
-    end
-    host.split[1].chars[0..8].join
+    detect_header("Host").split[1].chars[0..8].join
   end
 
   def port
-    port = request_lines.detect do |line|
-      line.include?("Host")
-    end
-    port.split[1].chars[-4..-1].join
+    detect_header("Host").split[1].chars[-4..-1].join
   end
 
+
   def origin
-    origin = request_lines.detect do |line|
-      line.include?("Host")
-    end
-    origin.split[1].chars[0..8].join
+    detect_header("Host").split[1].chars[0..8].join
   end
 
   def accept
-    accept = request_lines.detect do |line|
-      line.include?("Accept: ")
-    end
-    accept.split(":")[1]
+    detect_header("Accept: ").split(":")[1]
   end
 
   def all_parses

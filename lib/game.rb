@@ -14,12 +14,12 @@ class Game
 
   def guess_your_number(guess_num)
     guess_count += 1
-    # if guess_num > @correct_number
-    #   puts "Your guess of #{guess_num} was too high. You have guessed #{guess_count} times."
-    # elsif guess_num < @correct_number
-    #   puts "Your guess of #{guess_num} was too low. You have guessed #{guess_count} times."
-    # else guess_num = @correct_number
-    #   puts "Your guess of #{guess_num} was exactly right...finally! Only took you #{guess_count} times..."
+    if guess_num > @correct_number
+      puts "Your guess of #{guess_num} was too high. You have guessed #{guess_count} times."
+    elsif guess_num < @correct_number
+      puts "Your guess of #{guess_num} was too low. You have guessed #{guess_count} times."
+    else guess_num = @correct_number
+      puts "Your guess of #{guess_num} was exactly right...finally! Only took you #{guess_count} times..."
     end
   end
 end

@@ -33,6 +33,11 @@ class ParserTest < Minitest::Test
     assert_equal "/", parser.path
   end
 
+  def test_it_can_detect_the_parameter
+    parser = Parser.new(request_lines)
+    assert_equal nil, parser.parameter_value
+  end
+
   def test_it_finds_the_protocol
     parser = Parser.new(request_lines)
     assert_equal "HTTP/1.1", parser.protocol

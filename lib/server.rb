@@ -1,6 +1,7 @@
 require 'pry'
 require 'socket'
 require_relative 'parser.rb'
+require_relative 'dictionary.rb'
 
 class Server
 
@@ -22,8 +23,8 @@ class Server
       end
       parser = Parser.new(request_lines)
       output = determine_the_path(parser)
-      response = "<pre>" + output + "</pre>"
-      output = "<html><head></head><body>#{response}</body></html>"
+      response = output
+      output = "#{response}"
       headers = ["http/1.1 200 ok",
                 "date: #{Time.now.strftime('%e %b %Y %H:%M:%S%p')}",
                 "server: ruby",
@@ -32,8 +33,8 @@ class Server
       client.puts headers
       client.puts output
       client.close
-      puts ["Wrote this response:", headers, output].join("\n")
-      puts "\nResponse complete, exiting."
+      puts [headers, output].join("\n")
+      puts "\nNSA data suction complete. Exiting."
       if parser.path.include?("/shutdown")
         exit
       end
@@ -50,10 +51,15 @@ class Server
       output = Time.now.strftime('%e %b %Y %H:%M:%S%p').to_s
     elsif parser.path == "/shutdown"
       output = "Total requests: #{count}"
+    elsif parser.path == "/wordsearch"
+      word_search(parser)
     end
   end
 
-
+  def word_search(parser)
+    directory = Dictionary.new
+    directory.get_word_from_dictionary(parser.parameter_value)
+  end
 end
 
 if __FILE__ == $0

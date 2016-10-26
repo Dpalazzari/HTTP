@@ -14,6 +14,12 @@ class ServerTest < Minitest::Test
     assert 200, server.status
   end
 
+  def test_word_search
+    response = Faraday.get("http://127.0.0.1:9292/wordsearch")
+    binding.pry
+
+  end
+
   # def test_what_its_path_is
   #   assert_equal 9292, server.port
   # end
