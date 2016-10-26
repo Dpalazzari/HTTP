@@ -4,30 +4,24 @@ require_relative 'parser.rb'
 
 class Server
 
-  attr_reader :tcp_server, :hello_count
+  attr_reader :tcp_server, :hello_count, :count
   def initialize
     @tcp_server = TCPServer.new(9292)
     @hello_count = 0
+    @count = 0
   end
-  #need to develop testing with faraday =>
-  #need to implement different PATHS: /hello, /game, /word_search, /datetime, /shutdown <= loop
-  #should break when the user types in /shutdown
+
   def loop_the_server
     loop do
+      @count += 1
       client = tcp_server.accept
-      puts "Ready for a request"
-
+      puts "The NSA is listening..."
       request_lines = []
       while line = client.gets and !line.chomp.empty?
         request_lines << line.chomp
-        # binding.pry
       end
       parser = Parser.new(request_lines)
       output = determine_the_path(parser)
-      parser.all_parses
-      puts "Got this request:"
-      puts request_lines.inspect
-      puts "Sending response."
       response = "<pre>" + output + "</pre>"
       output = "<html><head></head><body>#{response}</body></html>"
       headers = ["http/1.1 200 ok",
@@ -37,10 +31,12 @@ class Server
                 "content-length: #{output.length}\r\n\r\n"].join("\r\n")
       client.puts headers
       client.puts output
-
-      puts ["Wrote this response:", headers, output].join("\n")
       client.close
+      puts ["Wrote this response:", headers, output].join("\n")
       puts "\nResponse complete, exiting."
+      if parser.path.include?("/shutdown")
+        exit
+      end
     end
   end
 
@@ -53,8 +49,11 @@ class Server
     elsif parser.path == "/datetime"
       output = Time.now.strftime('%e %b %Y %H:%M:%S%p').to_s
     elsif parser.path == "/shutdown"
+      output = "Total requests: #{count}"
     end
   end
+
+
 end
 
 if __FILE__ == $0

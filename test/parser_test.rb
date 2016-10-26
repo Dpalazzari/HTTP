@@ -58,7 +58,7 @@ class ParserTest < Minitest::Test
     assert_equal " */*", parser.accept
   end
 
-  def test_it_does_something_to_diagnostics
+  def test_it_inputs_parser_objects_in_to_diagnostic
     parser = Parser.new(request_lines)
     assert_equal "GET", parser.all_parses.split[1]
     assert_equal "/", parser.all_parses.split[3]
