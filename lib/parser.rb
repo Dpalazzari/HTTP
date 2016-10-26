@@ -57,15 +57,8 @@ class Parser
   end
 
   def all_parses
-    diagnostics = []
-    diagnostics << ["\n"]
-    diagnostics << "Verb: #{verb}"
-    diagnostics << "Path: #{path}"
-    diagnostics << "Protocol: #{protocol}"
-    diagnostics << "Host: #{host}"
-    diagnostics << "Port: #{port}"
-    diagnostics << "Origin: #{origin}"
-    diagnostics << "Accept: #{accept}"
+    diagnostic =
+         "Verb: #{verb}\nPath: #{path}\nProtocol: #{protocol}\nHost: #{host}\nPort: #{port}\nOrigin: #{host}\nAccept: #{accept}"
   end
 
 

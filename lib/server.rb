@@ -15,7 +15,6 @@ class Server
   def loop_the_server
     loop do
       client = tcp_server.accept
-      # @hello_count += 1
       puts "Ready for a request"
 
       request_lines = []
@@ -24,24 +23,13 @@ class Server
         # binding.pry
       end
       parser = Parser.new(request_lines)
+      output = determine_the_path(parser)
+      parser.all_parses
       puts "Got this request:"
       puts request_lines.inspect
-      if parser.all_parses.include?(" / ")
-
-      end
- # ["GET / HTTP/1.1",
- # "Host: 127.0.0.1:9292",
- # "Connection: keep-alive",
- # "Cache-Control: no-cache",
- # "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36",
- # "Postman-Token: 56a4de11-11ba-04b7-687f-495b6d0d9e71",
- # "Accept: */*",
- # "Accept-Encoding: gzip, deflate, sdch, br",
- # "Accept-Language: en-US,en;q=0.8"]
-
       puts "Sending response."
-      response = "#{}"
-      output = "#{response}"
+      response = "<pre>" + output + "</pre>"
+      output = "<html><head></head><body>#{response}</body></html>"
       headers = ["http/1.1 200 ok",
                 "date: #{Time.now.strftime('%e %b %Y %H:%M:%S%p')}",
                 "server: ruby",
@@ -53,6 +41,18 @@ class Server
       puts ["Wrote this response:", headers, output].join("\n")
       client.close
       puts "\nResponse complete, exiting."
+    end
+  end
+
+  def determine_the_path(parser)
+    if parser.path == "/"
+      output = parser.all_parses
+    elsif parser.path == "/hello"
+      @hello_count += 1
+      output =  "Hello, world! #{hello_count}"
+    elsif parser.path == "/datetime"
+      output = Time.now.strftime('%e %b %Y %H:%M:%S%p').to_s
+    elsif parser.path == "/shutdown"
     end
   end
 end

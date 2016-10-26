@@ -60,7 +60,8 @@ class ParserTest < Minitest::Test
 
   def test_it_does_something_to_diagnostics
     parser = Parser.new(request_lines)
-    assert_equal , parser.all_parses
+    assert_equal "GET", parser.all_parses.split[1]
+    assert_equal "/", parser.all_parses.split[3]
   end
 
 
