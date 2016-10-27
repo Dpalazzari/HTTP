@@ -57,10 +57,6 @@ class ServerTest < Minitest::Test
     assert_equal "Good luck!", Faraday.post("http://127.0.0.1:9292/start_game").body
   end
 
-  def test_it_returns_how_many_guesses_have_been_taken
-    Faraday.post("http://127.0.0.1:9292/start_game")
-    assert_equal "You have made 1 guess(es), and they were as follows:  ", Faraday.get("http://127.0.0.1:9292/game").body
-  end
 
 
 end
