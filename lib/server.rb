@@ -24,7 +24,7 @@ class Server
       parser = Parser.new(request_lines)
       output = router.determine_the_path(parser, count)
       response = output
-      output_header_response(response, client)
+      output_header_response(response, client, parser)
       if parser.path.include?("/shutdown")
         exit
       end
@@ -39,22 +39,32 @@ class Server
     request_lines
   end
 
-  def output_header_response(response, client)
+  def output_header_response(response, client, parser)
     output = "#{response}"
-    printed_headers = what_the_header_prints(output)
-    client.puts printed_headers
+    headers = what_the_header_prints(output, parser)
+    client.puts headers
     client.puts output
     client.close
-    puts [printed_headers, output].join("\n")
+    puts [headers, output].join("\n")
     puts "\nNSA data suction complete. Exiting."
   end
 
-  def what_the_header_prints(output)
-    headers = ["http/1.1 200 ok",
-              "date: #{Time.now.strftime('%e %b %Y %H:%M:%S%p')}",
-              "server: ruby",
-              "content-type: text/html; charset=iso-8859-1",
-              "content-length: #{output.length}\r\n\r\n"].join("\r\n")
+  def what_the_header_prints(output, parser)
+    if parser.verb == "POST" && parser.path == "/game"
+      binding.pry
+      headers = ["http/1.1 301 Moved Permanently",
+                        "Location: http://127.0.0.1:9292/game",
+                        "date: #{Time.now.strftime('%e %b %Y %H:%M:%S%p')}",
+                        "content-type: text/html; charset=iso-8859-1",
+                        "content-length: #{output.length}\r\n\r\n"].join("\r\n")
+    else
+      headers = ["http/1.1 200 ok",
+                  "date: #{Time.now.strftime('%e %b %Y %H:%M:%S%p')}",
+                  "server: ruby",
+                  "content-type: text/html; charset=iso-8859-1",
+                  "content-length: #{output.length}\r\n\r\n"].join("\r\n")
+    end
+    headers
   end
 
 end

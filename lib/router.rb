@@ -60,7 +60,7 @@ class Router
   def game
     num_guesses = @game.guess_count
     guesses = @game.guesses.join("\n")
-    output = "You have made #{num_guesses} guess(es), and they were as follows: #{guesses} "
+    output = "You have made #{num_guesses} guess(es), and they were as follows:\n" "#{guesses}"
   end
 
   def game_post(parser)
