@@ -20,29 +20,39 @@ class Server
       @count += 1
       client = tcp_server.accept
       puts "The NSA is listening..."
-      request_lines = []
-      while line = client.gets and !line.chomp.empty?
-        request_lines << line.chomp
-      end
+      request_lines = building_the_request_lines(client)
       parser = Parser.new(request_lines)
       output = router.determine_the_path(parser, count)
       response = output
-      output = "#{response}"
-      headers = ["http/1.1 200 ok",
-                "date: #{Time.now.strftime('%e %b %Y %H:%M:%S%p')}",
-                "server: ruby",
-                "content-type: text/html; charset=iso-8859-1",
-                "content-length: #{output.length}\r\n\r\n"].join("\r\n")
-      client.puts headers
-      client.puts output
-      client.close
-      puts [headers, output].join("\n")
-      puts "\nNSA data suction complete. Exiting."
+      output_header_response(response, client)
       if parser.path.include?("/shutdown")
         exit
       end
     end
   end
+
+  def building_the_request_lines(client)
+    request_lines = []
+    while line = client.gets and !line.chomp.empty?
+      request_lines << line.chomp
+    end
+    request_lines
+  end
+
+  def output_header_response(response, client)
+    output = "#{response}"
+    headers = ["http/1.1 200 ok",
+              "date: #{Time.now.strftime('%e %b %Y %H:%M:%S%p')}",
+              "server: ruby",
+              "content-type: text/html; charset=iso-8859-1",
+              "content-length: #{output.length}\r\n\r\n"].join("\r\n")
+    client.puts headers
+    client.puts output
+    client.close
+    puts [headers, output].join("\n")
+    puts "\nNSA data suction complete. Exiting."
+  end
+
 end
 
 if __FILE__ == $0
