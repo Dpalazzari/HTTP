@@ -24,7 +24,7 @@ class Server
       parser = Parser.new(request_lines)
       output = router.determine_the_path(parser, count)
       response = output
-      output_header_response(response, client)
+      output_header_response(response, client, parser)
       if parser.path.include?("/shutdown")
         exit
       end
@@ -39,9 +39,13 @@ class Server
     request_lines
   end
 
-  def output_header_response(response, client)
+  def output_header_response(response, client, parser)
     output = "#{response}"
-    printed_headers = what_the_header_prints(output)
+    if parser.verb == "PATH" && parser.path.include?("/game")
+      printed_headers = redirect(output)
+    else
+      printed_headers = what_the_header_prints(output)
+    end
     client.puts printed_headers
     client.puts output
     client.close
@@ -57,13 +61,13 @@ class Server
               "content-length: #{output.length}\r\n\r\n"].join("\r\n")
   end
 
-  def redirect
+  def redirect(output)
     redirect_header = ["http/1.1 301 Moved Permanently",
-                      "Location: http://127.0.0.1:9292/game",
-                      "date: #{Time.now.strftime('%e %b %Y %H:%M:%S%p')}",
-                      "server: ruby",
-                      "content-type: text/html; charset=iso-8859-1",
-                      "content-length: #{output.length}\r\n\r\n"].join("\r\n")
+                       "Location: http://127.0.0.1:9292/game",
+                       "date: #{Time.now.strftime('%e %b %Y %H:%M:%S%p')}",
+                       "server: ruby",
+                       "content-type: text/html; charset=iso-8859-1",
+                       "content-length: #{output.length}\r\n\r\n"].join("\r\n")
   end
 
 end
