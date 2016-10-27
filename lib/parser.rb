@@ -25,6 +25,10 @@ class Parser
     end
   end
 
+  def guess_grabber
+    request_lines.first.split("=").last.split(" ").first.to_i
+  end
+
   def parameter_value
     if detect_header("HTTP").include?("?")
       param = detect_header("HTTP").split
