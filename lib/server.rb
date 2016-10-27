@@ -41,9 +41,9 @@ class Server
 
   def output_header_response(response, client, parser)
     output = "#{response}"
-    if parser.verb == "PATH" && parser.path.include?("/game")
+    if parser.verb == "POST" && parser.path.include?("/game")
       printed_headers = redirect(output)
-    else
+    elsif
       printed_headers = what_the_header_prints(output)
     end
     client.puts printed_headers
