@@ -41,16 +41,20 @@ class Server
 
   def output_header_response(response, client)
     output = "#{response}"
+    printed_headers = what_the_header_prints(output)
+    client.puts printed_headers
+    client.puts output
+    client.close
+    puts [printed_headers, output].join("\n")
+    puts "\nNSA data suction complete. Exiting."
+  end
+
+  def what_the_header_prints(output)
     headers = ["http/1.1 200 ok",
               "date: #{Time.now.strftime('%e %b %Y %H:%M:%S%p')}",
               "server: ruby",
               "content-type: text/html; charset=iso-8859-1",
               "content-length: #{output.length}\r\n\r\n"].join("\r\n")
-    client.puts headers
-    client.puts output
-    client.close
-    puts [headers, output].join("\n")
-    puts "\nNSA data suction complete. Exiting."
   end
 
 end
