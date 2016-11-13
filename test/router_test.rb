@@ -22,8 +22,4 @@ class RouterTest < Minitest::Test
     assert_equal "Hello, world! 1", router.hello
   end
 
-  def test_it_can_reset_the_hello_count
-    assert_equal 0, router.reset_hello
-  end
-
 end
