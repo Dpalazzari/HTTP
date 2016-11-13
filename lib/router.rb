@@ -30,7 +30,7 @@ class Router
     elsif parser.path == "/game" && parser.verb == "POST"
       [game_post(client, parser), "200 Ok"]
     elsif parser.path == "/game"
-      [game(parser), "200 Ok"]
+      [game_play(parser), "200 Ok"]
     elsif parser.path == "/force_error"
       ["System Error", "500 Internal Server Error"]
     else
@@ -57,7 +57,7 @@ class Router
     "Good luck!"
   end
 
-  def game(parser)
+  def game_play(parser)
     game.play_the_game
   end
 
