@@ -28,6 +28,7 @@ class GameTest < Minitest::Test
   end
 
   def test_it_will_tell_you_your_guesses
+    skip
     game = Game.new
     game.start_the_game
     game.play_the_game
