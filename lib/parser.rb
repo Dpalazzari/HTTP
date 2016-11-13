@@ -13,6 +13,12 @@ class Parser
     end
   end
 
+  def content_length
+    request_lines.find do |line|
+      line.include?("Content-Length")
+    end.split[-1]
+  end
+
   def verb
     detect_header("HTTP").split[0]
   end
@@ -23,10 +29,6 @@ class Parser
     else
       detect_header("HTTP").split[1]
     end
-  end
-
-  def guess_grabber
-    request_lines.first.split("=").last.split(" ").first.to_i
   end
 
   def parameter_value
