@@ -25,7 +25,7 @@ class Router
       if game.start
         ["Game already started.", "403 Forbidden"]
       else
-        [start_a_game(parser), "200 Ok"]
+        [start_a_game(parser), "301 Moved Permanently"]
       end
     elsif parser.path == "/game" && parser.verb == "POST"
       [game_post(client, parser), "200 Ok"]
@@ -33,6 +33,8 @@ class Router
       [game_play(parser), "200 Ok"]
     elsif parser.path == "/force_error"
       ["System Error", "500 Internal Server Error"]
+    elsif parser.path == "/get_permissions"
+      ["You do not have permission.", "401 Unauthorized"]
     else
       ["Sorry page not found", "404 Not Found"]
     end
@@ -44,7 +46,7 @@ class Router
   end
 
   def date_time
-    Time.now.strftime('%e %b %Y %H:%M:%S%p').to_s
+    Time.now.strftime('%e %b %Y %H:%M:%S%p')
   end
 
   def word_search(parser)

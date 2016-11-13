@@ -23,4 +23,9 @@ class RouterTest < Minitest::Test
     assert_equal 1, router.hello_count
   end
 
+  def test_it_can_post_the_time
+    output = router.date_time
+    assert_equal String, output.class
+  end
+
 end

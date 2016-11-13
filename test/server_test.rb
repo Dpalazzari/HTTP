@@ -46,4 +46,15 @@ class ServerTest < Minitest::Test
     assert server.body.include?("2016")
   end
 
+  def test_it_returns_system_error
+    server = Faraday.get("http://127.0.0.1:9292/force_error")
+    assert server.body.include?("System Error")
+  end
+
+  def test_it_does_nothing_with_no_path
+    server = Faraday.get("http://127.0.0.1:9292/kflgjfhgk")
+    assert_equal "Sorry page not found", server.body
+  end
+
+
 end
