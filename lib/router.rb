@@ -1,49 +1,50 @@
-require 'pry'
 require_relative 'parser.rb'
 require_relative 'dictionary.rb'
 require_relative 'server.rb'
 
-
 class Router
 
-  attr_reader :hello_count
+  attr_reader :hello_count, :game
   def initialize
     @hello_count = 0
+    @game = Game.new
   end
 
-  def determine_the_path(parser, count)
+  def determine_the_path(parser, count, client)
     if parser.path == "/"
-      output = parser.all_parses
+      [parser.all_parses, "200 Ok"]
     elsif parser.path == "/hello"
-      hello
-    elsif parser.path == "/reset_hello"
-      reset_hello
+      [hello, "200 Ok"]
     elsif parser.path == "/datetime"
-      date_time
+      [date_time, "200 Ok"]
     elsif parser.path == "/shutdown"
-      output = "Total requests: #{count}"
+      ["Total requests: #{count}", "200 Ok"]
     elsif parser.path == "/word_search"
-      word_search(parser)
+      [word_search(parser), "200 Ok"]
     elsif parser.path == "/start_game" && parser.verb == "POST"
-      start_a_game
+      if game.start
+        ["Game already started.", "403 Forbidden"]
+      else
+        [start_a_game(parser), "200 Ok"]
+      end
     elsif parser.path == "/game" && parser.verb == "POST"
-      game_post(parser)
+      [game_post(client, parser), "200 Ok"]
     elsif parser.path == "/game"
-      game
+      [game(parser), "200 Ok"]
+    elsif parser.path == "/force_error"
+      ["System Error", "500 Internal Server Error"]
+    else
+      ["Sorry page not found", "404 Not Found"]
     end
   end
 
   def hello
     @hello_count += 1
-    output =  "Hello, world! #{hello_count}"
-  end
-
-  def reset_hello
-    @hello_count = 0
+    "Hello, world! #{hello_count}"
   end
 
   def date_time
-    output = Time.now.strftime('%e %b %Y %H:%M:%S%p').to_s
+    Time.now.strftime('%e %b %Y %H:%M:%S%p').to_s
   end
 
   def word_search(parser)
@@ -51,20 +52,18 @@ class Router
     directory.get_word_from_dictionary(parser.parameter_value)
   end
 
-  def start_a_game
-    @game = Game.new
-    @game.start_the_game
+  def start_a_game(parser)
+    game.start_the_game
     "Good luck!"
   end
 
-  def game
-    num_guesses = @game.guess_count
-    guesses = @game.guesses.join("\n")
-    output = "You have made #{num_guesses} guess(es), and they were as follows:\n" "#{guesses}"
+  def game(parser)
+    game.play_the_game
   end
 
-  def game_post(parser)
-    output = @game.guess_your_number(parser.guess_grabber)
+  def game_post(client, parser)
+    value = parser.content_length
+    game.get_guess_value(client, value)
   end
 
 end
