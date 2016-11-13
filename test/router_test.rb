@@ -18,8 +18,9 @@ class RouterTest < Minitest::Test
     assert_equal 0, router.hello_count
   end
 
-  def test_it_can_add_one_to_hello_count
-    assert_equal "Hello, world! 1", router.hello
+  def test_it_counts_hellos
+    output = router.hello
+    assert_equal 1, router.hello_count
   end
 
 end
