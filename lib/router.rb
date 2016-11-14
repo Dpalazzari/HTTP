@@ -1,3 +1,4 @@
+require 'pry'
 require_relative 'parser.rb'
 require_relative 'dictionary.rb'
 require_relative 'server.rb'
