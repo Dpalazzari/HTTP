@@ -1,5 +1,7 @@
 class Game
+
   attr_reader :start, :correct_number, :guesses, :guess_num
+
   def initialize
     @start = false
     @guesses = []

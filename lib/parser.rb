@@ -36,7 +36,7 @@ class Parser
       param = detect_header("HTTP").split
       param_1 = param[1].split("?")
       param_2 = param_1[1].split("=")
-      word = param_2[1]
+      param_2[1]
     end
   end
 
@@ -62,7 +62,6 @@ class Parser
   end
 
   def all_parses
-    diagnostic =
          "Verb: #{verb}\nPath: #{path}\nProtocol: #{protocol}\nHost: #{host}\nPort: #{port}\nOrigin: #{host}\nAccept: #{accept}"
   end
 
